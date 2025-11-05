@@ -1,0 +1,15 @@
+[project]
+name = "py-opendrive"
+version = "0.1.0"
+description = "A library to work with the OpenDRIVE map format: reading, writing, visualization"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "lxml>=6.0.2",
+]
+
+[dependency-groups]
+dev = [
+    "pyproject-pre-commit[ruff]>=0.4.2",
+    "pytest>=8.4.2",
+]
