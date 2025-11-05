@@ -1,0 +1,12 @@
+repos:
+  - repo: https://github.com/rcmdnk/pyproject-pre-commit
+    rev: v0.4.2
+    hooks:
+      - id: ruff-lint-diff
+      - id: ruff-lint
+      - id: ruff-format-diff
+      - id: ruff-format
+      - id: shellcheck
+      - id: mdformat-check
+      - id: mdformat
+      - id: actionlint
