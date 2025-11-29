@@ -33,6 +33,7 @@ class Spiral:
     # Curvature at the end of the element in 1/m.
     curv_end: float = 0.0
 
+    @staticmethod
     def from_xml(elem: etree._Element) -> Spiral:
         """Creates a Spiral instance from an XML node."""
         s = float(elem.get("s"))

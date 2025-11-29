@@ -24,6 +24,7 @@ class Line:
     # The length of the line.
     length: float = 0.0
 
+    @staticmethod
     def from_xml(elem: etree._Element) -> Line:
         """Creates a Line instance from an XML node."""
         s = float(elem.get("s"))
