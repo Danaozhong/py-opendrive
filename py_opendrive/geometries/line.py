@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from lxml import etree
+from py_opendrive.geometries.basic import GeometryType
 
 
 @dataclass
@@ -23,6 +24,10 @@ class Line:
 
     # The length of the line.
     length: float = 0.0
+
+    def type(self) -> GeometryType:
+        """Returns the geometry type."""
+        return GeometryType.LINE
 
     @staticmethod
     def from_xml(elem: etree._Element) -> Line:

@@ -43,6 +43,12 @@ GeoReference = str
 
 
 @dataclass
+class GeoRef:
+    offset: Optional[HeaderOffset]
+    proj: str
+
+
+@dataclass
 class License:
     name: str
     resource: Optional[str] = None
@@ -112,6 +118,13 @@ class Header:
     geo_reference: Optional[GeoReference] = None
     offset: Optional[HeaderOffset] = None
     license: Optional[License] = None
+
+    def get_geo_reference(self) -> GeoRef:
+        """Returns the geo reference if available."""
+        return GeoRef(
+            offset=self.offset,
+            proj=self.geo_reference if self.geo_reference is not None else "EPSG:4326",
+        )
 
     @staticmethod
     def from_xml(elem: etree._Element) -> Header:

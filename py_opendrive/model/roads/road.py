@@ -5,6 +5,7 @@ from lxml import etree
 
 from py_opendrive.model.enumerations import TrafficRule, RoadType as RoadTypeEnum
 from py_opendrive.model.lanes.road_lanes import RoadLanes
+from py_opendrive.geometries.road_reference_line import RoadReferenceLine
 
 
 @dataclass
@@ -38,6 +39,9 @@ class Road:
     road_signals: Optional[RoadSignals] = None
     road_railroad: Optional[RoadRailroad] = None
 
+    # The road reference line.
+    plan_view: RoadReferenceLine = field(default_factory=RoadReferenceLine)
+
     type: list[RoadType] = field(default_factory=list)
 
     @staticmethod
@@ -50,6 +54,11 @@ class Road:
         name = elem.get("name", None)
         rule = TrafficRule[elem.find("rule")] if elem.find("rule") else None
 
+        # Decode the reference line geometries.
+        plan_view_element = elem.find("planView")
+        plan_view = RoadReferenceLine.from_xml(plan_view_element)
+
+        # Decode the lanes.
         lanes_element = elem.find("lanes")
         road_lanes = RoadLanes.from_xml(lanes_element)
         return Road(
@@ -59,6 +68,7 @@ class Road:
             name=name,
             rule=rule,
             link=None,
+            plan_view=plan_view,
             lanes=road_lanes,
             road_objects=None,
             road_signals=None,
@@ -76,6 +86,9 @@ class Road:
             elem.set("name", self.name)
         if self.rule:
             elem.set("rule", self.rule.name)
+
+        plan_view_element = self.plan_view.to_xml()
+        elem.append(plan_view_element)
 
         lanes_element = self.lanes.to_xml()
         elem.append(lanes_element)
