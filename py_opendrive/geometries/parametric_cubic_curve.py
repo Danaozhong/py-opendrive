@@ -1,7 +1,32 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from lxml import etree
 from py_opendrive.model.enumerations import PolyRange
+from py_opendrive.geometries.basic import GeometryType
+
+
+@dataclass
+class CubicPolynomial:
+    r"""Class representing the Cubic polynomial.
+
+    $$y(x) = a + b*x + c*x2 + d*x^3$$
+
+    Parameters
+    ----------
+    a : float
+        a parameter in the interpolation equation.
+    b : float
+        b parameter in the interpolation equation.
+    c : float
+        c parameter in the interpolation equation.
+    d : float
+        d parameter in the interpolation equation.
+    """
+
+    a: float = 0.0
+    b: float = 0.0
+    c: float = 0.0
+    d: float = 0.0
 
 
 @dataclass
@@ -16,19 +41,15 @@ class ParametricCubicCurve:
     hdg: float = 0.0
     length: float = 0.0
 
-    # Coefficients for the u and v parametric equations.
-    a_u: float = 0.0
-    b_u: float = 0.0
-    c_u: float = 0.0
-    d_u: float = 0.0
-
-    a_v: float = 0.0
-    b_v: float = 0.0
-    c_v: float = 0.0
-    d_v: float = 0.0
+    u_poly: CubicPolynomial = field(default_factory=CubicPolynomial)
+    v_poly: CubicPolynomial = field(default_factory=CubicPolynomial)
 
     # How to interpret the length. If normalized, length is in [0,1], otherwise in meters.
     p_range: PolyRange = PolyRange.ARC_LENGTH
+
+    def type(self) -> GeometryType:
+        """Returns the geometry type."""
+        return GeometryType.PARAMPOLY3
 
     @staticmethod
     def from_xml(elem: etree._Element) -> ParametricCubicCurve:
@@ -41,15 +62,19 @@ class ParametricCubicCurve:
         length = float(elem.get("length"))
         poly_element = elem.find("paramPoly3")
 
-        a_u = float(poly_element.get("aU"))
-        b_u = float(poly_element.get("bU"))
-        c_u = float(poly_element.get("cU"))
-        d_u = float(poly_element.get("dU"))
+        u_poly = CubicPolynomial(
+            a=float(poly_element.get("aU")),
+            b=float(poly_element.get("bU")),
+            c=float(poly_element.get("cU")),
+            d=float(poly_element.get("dU")),
+        )
 
-        a_v = float(poly_element.get("aV"))
-        b_v = float(poly_element.get("bV"))
-        c_v = float(poly_element.get("cV"))
-        d_v = float(poly_element.get("dV"))
+        v_poly = CubicPolynomial(
+            a=float(poly_element.get("aV")),
+            b=float(poly_element.get("bV")),
+            c=float(poly_element.get("cV")),
+            d=float(poly_element.get("dV")),
+        )
 
         p_range = PolyRange(poly_element.get("pRange"))
 
@@ -59,14 +84,8 @@ class ParametricCubicCurve:
             y=y,
             hdg=hdg,
             length=length,
-            a_u=a_u,
-            b_u=b_u,
-            c_u=c_u,
-            d_u=d_u,
-            a_v=a_v,
-            b_v=b_v,
-            c_v=c_v,
-            d_v=d_v,
+            u_poly=u_poly,
+            v_poly=v_poly,
             p_range=p_range,
         )
 
@@ -81,14 +100,14 @@ class ParametricCubicCurve:
 
         # Write the spiral-specific elements in a sub-element.
         parametric_element = etree.Element("paramPoly3")
-        parametric_element.set("aU", str(self.a_u))
-        parametric_element.set("bU", str(self.b_u))
-        parametric_element.set("cU", str(self.c_u))
-        parametric_element.set("dU", str(self.d_u))
-        parametric_element.set("aV", str(self.a_v))
-        parametric_element.set("bV", str(self.b_v))
-        parametric_element.set("cV", str(self.c_v))
-        parametric_element.set("dV", str(self.d_v))
+        parametric_element.set("aU", str(self.u_poly.a))
+        parametric_element.set("bU", str(self.u_poly.b))
+        parametric_element.set("cU", str(self.u_poly.c))
+        parametric_element.set("dU", str(self.u_poly.d))
+        parametric_element.set("aV", str(self.v_poly.a))
+        parametric_element.set("bV", str(self.v_poly.b))
+        parametric_element.set("cV", str(self.v_poly.c))
+        parametric_element.set("dV", str(self.v_poly.d))
         parametric_element.set("pRange", self.p_range.value)
         elem.append(parametric_element)
         return elem

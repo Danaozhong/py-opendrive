@@ -27,20 +27,20 @@ class LaneSection:
 
         left: list[Lane] = []
         right: list[Lane] = []
-        if elem.get("left") is not None:
+        if elem.find("left") is not None:
             left = [
                 Lane.from_xml(lane_elem)
-                for lane_elem in elem.get("left").findall("lane")
+                for lane_elem in elem.find("left").findall("lane")
             ]
-        if elem.get("right") is not None:
+        if elem.find("right") is not None:
             right = [
                 Lane.from_xml(lane_elem)
-                for lane_elem in elem.get("right").findall("lane")
+                for lane_elem in elem.find("right").findall("lane")
             ]
 
         center = None
-        if elem.get("center") is not None:
-            center = CenterLane.from_xml(elem.get("center").get("lane"))
+        if elem.find("center") is not None:
+            center = CenterLane.from_xml(elem.find("center").find("lane"))
 
         return LaneSection(
             s=s,

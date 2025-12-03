@@ -1,6 +1,24 @@
 from enum import Enum
 
 
+class AccessRestrictionType(Enum):
+    HOV = "HOV"
+    AUTONOMOUS_TRAFFIC = "autonomousTraffic"
+    BICYCLE = "bicycle"
+    BUS = "bus"
+    DELIVERY = "delivery"
+    EMERGENCY = "emergency"
+    MOTORCYCLE = "motorcycle"
+    NONE = "none"
+    PASSENGER_CAR = "passengerCar"
+    PEDESTRIAN = "pedestrian"
+    SIMULATOR = "simulator"
+    TAXI = "taxi"
+    THROUGH_TRAFFIC = "throughTraffic"
+    TRUCK = "truck"
+    TRUCKS = "trucks"
+
+
 class UnitDistance(Enum):
     FOOT = "ft"
     KILOMETER = "km"
@@ -10,6 +28,12 @@ class UnitDistance(Enum):
 
 class UnitSlope(Enum):
     PERCENT = "%"
+
+
+class UnitSpeed(Enum):
+    KILOMETER_PER_HOUR = "km/h"
+    METER_PER_SECOND = "m/s"
+    MILE_PER_HOUR = "mph"
 
 
 class DataQualityRawDataSource(Enum):

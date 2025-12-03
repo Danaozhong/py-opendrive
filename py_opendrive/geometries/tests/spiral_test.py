@@ -3,7 +3,7 @@ from lxml import etree
 from py_opendrive.geometries.spiral import Spiral
 
 
-def test_spiral_from_xml_and_to_xml_roundtrip():
+def test_spiral_from_xml_and_to_xml_roundtrip() -> None:
     # Example XML string for OpenDRIVE geometry with spiral.
     xml_data = """
     <geometry s="0.0" x="100.0" y="200.0" hdg="0.5" length="50.0">
